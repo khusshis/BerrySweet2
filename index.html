@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BerrySweet Productivity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'strawberry': {
+                            '50': '#fff0f1',
+                            '100': '#ffe3e5',
+                            '200': '#ffccd1',
+                            '300': '#ffa1aa',
+                            '400': '#ff6b7c',
+                            '500': '#fb3854',
+                            '600': '#e91f43',
+                            '700': '#c11236',
+                            '800': '#a11233',
+                            '900': '#8b1432',
+                        },
+                        'lychee': {
+                            '50': '#fdf2f8',
+                            '100': '#fce8f3',
+                            '200': '#fad1e8',
+                            '300': '#f8b4d9',
+                            '400': '#f17eb8',
+                            '500': '#e74694',
+                            '600': '#d61a69',
+                            '700': '#bf125d',
+                            '800': '#99154b',
+                            '900': '#751a3d',
+                        },
+                        'mango': {
+                            '50': '#fff8eb',
+                            '100': '#ffebc6',
+                            '200': '#ffd488',
+                            '300': '#ffb545',
+                            '400': '#ff9a20',
+                            '500': '#f97807',
+                            '600': '#dd5602',
+                            '700': '#b73906',
+                            '800': '#942b0c',
+                            '900': '#7a240d',
+                        },
+                        'melon': {
+                            '50': '#f0fdf4',
+                            '100': '#dcfce7',
+                            '200': '#bbf7d0',
+                            '300': '#86efac',
+                            '400': '#4ade80',
+                            '500': '#22c55e',
+                            '600': '#16a34a',
+                            '700': '#15803d',
+                            '800': '#166534',
+                            '900': '#14532d',
+                        },
+                        'dairy': {
+                            '50': '#fafafa',
+                            '100': '#f5f5f5',
+                            '200': '#e5e5e5',
+                            '300': '#d4d4d4',
+                            '400': '#a3a3a3',
+                            '500': '#737373',
+                            '600': '#525252',
+                            '700': '#404040',
+                            '800': '#262626',
+                            '900': '#171717',
+                        }
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in',
+                        'slide-in': 'slideIn 0.3s ease-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="theme-strawberry bg-bg text-text min-h-screen">
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal">
+        <div class="modal-content bg-white rounded-lg p-8 w-full max-w-md transform translate-y-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-primary">Welcome to BerrySweet</h2>
+                <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="loginForm" action="login.php" method="POST">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition duration-300">Login</button>
+                <p class="text-center mt-4 text-sm text-gray-600">Don't have an account? <a href="#" id="showRegister" class="text-primary hover:underline">Register here</a></p>
+            </form>
+            
+            <form id="registerForm" action="register.php" method="POST" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-primary">Create Account</h2>
+                    <button id="closeRegisterModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <label for="regUsername" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="regUsername" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <div class="mb-4">
+                    <label for="regEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="regEmail" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <div class="mb-4">
+                    <label for="regPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="regPassword" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <div class="mb-6">
+                    <label for="regConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" name="confirm_password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition duration-300">Register</button>
+                <p class="text-center mt-4 text-sm text-gray-600">Already have an account? <a href="#" id="showLogin" class="text-primary hover:underline">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div id="mainLayout" class="hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-40 sidebar sidebar-closed">
+            <div class="flex items-center justify-between p-4 border-b">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <span class="ml-3 font-semibold text-primary">BerrySweet</span>
+                </div>
+                <button id="closeSidebar" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Dashboard</h3>
+                    <ul>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="dashboard">
+                                <i class="fas fa-home mr-3 text-primary"></i> Overview
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Productivity</h3>
+                    <ul>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="todo">
+                                <i class="fas fa-check-circle mr-3 text-primary"></i> To-Do List
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="notes">
+                                <i class="fas fa-book mr-3 text-primary"></i> Notes
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="habits">
+                                <i class="fas fa-chart-line mr-3 text-primary"></i> Habit Tracker
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="pomodoro">
+                                <i class="fas fa-clock mr-3 text-primary"></i> Pomodoro Timer
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Finance</h3>
+                    <ul>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="expenses">
+                                <i class="fas fa-wallet mr-3 text-primary"></i> Expense Tracker
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Settings</h3>
+                    <ul>
+                        <li class="mb-1">
+                            <a href="#" class="tab-link flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-secondary hover:text-primary" data-tab="settings">
+                                <i class="fas fa-cog mr-3 text-primary"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-700">Logged in as</p>
+                        <p class="text-xs text-gray-500" id="loggedInUser">Username</p>
+                    </div>
+                    <button id="logoutBtn" class="ml-auto text-gray-500 hover:text-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-0 transition-all duration-300">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <button id="openSidebar" class="mr-4 text-gray-500 hover:text-primary">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-900" id="pageTitle">Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button id="themeToggle" class="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-primary hover:bg-primary hover:text-white transition duration-300">
+                                <i class="fas fa-palette"></i>
+                            </button>
+                            <div id="themeDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-theme="strawberry">Strawberry</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-theme="lychee">Lychee</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-theme="mango">Mango</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-theme="melon">Melon</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-theme="dairy">Dairy</a>
+                            </div>
+                        </div>
+                        <button class="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-primary hover:bg-primary hover:text-white transition duration-300">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-md p-6 card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">To-Do List</h3>
+                                <div class="w-12 h-12 rounded-full bg-primary-light bg-opacity-20 flex items-center justify-center text-primary">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3" id="dashboard-todos">
+                                <!-- To-do items will be loaded here -->
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="tab-link text-primary hover:underline flex items-center" data-tab="todo">
+                                    View all <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6 card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Recent Notes</h3>
+                                <div class="w-12 h-12 rounded-full bg-primary-light bg-opacity-20 flex items-center justify-center text-primary">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3" id="dashboard-notes">
+                                <!-- Notes will be loaded here -->
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="tab-link text-primary hover:underline flex items-center" data-tab="notes">
+                                    View all <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6 card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Habit Progress</h3>
+                                <div class="w-12 h-12 rounded-full bg-primary-light bg-opacity-20 flex items-center justify-center text-primary">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-4" id="dashboard-habits">
+                                <!-- Habit progress will be loaded here -->
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="tab-link text-primary hover:underline flex items-center" data-tab="habits">
+                                    View all <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow-md p-6 card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Recent Expenses</h3>
+                                <div class="w-12 h-12 rounded-full bg-primary-light bg-opacity-20 flex items-center justify-center text-primary">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3" id="dashboard-expenses">
+                                <!-- Expenses will be loaded here -->
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="tab-link text-primary hover:underline flex items-center" data-tab="expenses">
+                                    View all <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6 card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Monthly Summary</h3>
+                                <div class="w-12 h-12 rounded-full bg-primary-light bg-opacity-20 flex items-center justify-center text-primary">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                            </div>
+                            <div class="h-64" id="expenseChart">
+                                <!-- Chart will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- To-Do List Tab -->
+                <div id="todo" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">To-Do List</h2>
+                        <button id="addTodoBtn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Task
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="grid grid-cols-12 bg-secondary text-gray-700 font-medium py-3 px-4">
+                            <div class="col-span-1">Status</div>
+                            <div class="col-span-6">Task</div>
+                            <div class="col-span-3">Due Date</div>
+                            <div class="col-span-2">Actions</div>
+                        </div>
+                        <div class="divide-y divide-gray-200" id="todoList">
+                            <!-- To-do items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Add Todo Modal -->
+                    <div id="addTodoModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md modal-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-primary">Add New Task</h3>
+                                <button id="closeTodoModal" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="todoForm">
+                                <div class="mb-4">
+                                    <label for="todoTitle" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                                    <input type="text" id="todoTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="todoDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <textarea id="todoDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="todoDueDate" class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                                    <input type="date" id="todoDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="todoPriority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                                    <select id="todoPriority" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelTodo" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Task</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notes Tab -->
+                <div id="notes" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Notes</h2>
+                        <div class="flex space-x-3">
+                            <button id="addNoteBtn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300 flex items-center">
+                                <i class="fas fa-plus mr-2"></i> Add Note
+                            </button>
+                            <div class="relative">
+                                <button id="noteFilterBtn" class="bg-secondary text-primary px-4 py-2 rounded-md hover:bg-primary hover:text-white transition duration-300 flex items-center">
+                                    <i class="fas fa-filter mr-2"></i> Filter
+                                </button>
+                                <div id="noteFilterDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-filter="all">All Notes</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-filter="recent">Recent</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary hover:text-primary" data-filter="favorites">Favorites</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="notesContainer">
+                        <!-- Notes will be loaded here -->
+                    </div>
+                    
+                    <!-- Add Note Modal -->
+                    <div id="addNoteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-2xl modal-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-primary">Add New Note</h3>
+                                <button id="closeNoteModal" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="noteForm">
+                                <div class="mb-4">
+                                    <label for="noteTitle" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                    <input type="text" id="noteTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="noteContent" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                                    <textarea id="noteContent" rows="10" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                </div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <div>
+                                        <label for="noteColor" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                                        <div class="flex space-x-2">
+                                            <input type="radio" name="noteColor" id="colorPink" value="pink" class="hidden" checked>
+                                            <label for="colorPink" class="w-6 h-6 rounded-full bg-pink-200 cursor-pointer"></label>
+                                            <input type="radio" name="noteColor" id="colorYellow" value="yellow" class="hidden">
+                                            <label for="colorYellow" class="w-6 h-6 rounded-full bg-yellow-200 cursor-pointer"></label>
+                                            <input type="radio" name="noteColor" id="colorGreen" value="green" class="hidden">
+                                            <label for="colorGreen" class="w-6 h-6 rounded-full bg-green-200 cursor-pointer"></label>
+                                            <input type="radio" name="noteColor" id="colorBlue" value="blue" class="hidden">
+                                            <label for="colorBlue" class="w-6 h-6 rounded-full bg-blue-200 cursor-pointer"></label>
+                                            <input type="radio" name="noteColor" id="colorPurple" value="purple" class="hidden">
+                                            <label for="colorPurple" class="w-6 h-6 rounded-full bg-purple-200 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="noteFavorite" class="hidden">
+                                        <label for="noteFavorite" class="flex items-center cursor-pointer">
+                                            <span class="w-5 h-5 border border-gray-300 rounded-md mr-2 flex items-center justify-center">
+                                                <i class="fas fa-heart text-primary hidden"></i>
+                                            </span>
+                                            <span class="text-sm text-gray-700">Favorite</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelNote" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Note</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habit Tracker Tab -->
+                <div id="habits" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Habit Tracker</h2>
+                        <button id="addHabitBtn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Habit
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Habit Progress</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="habitProgress">
+                            <!-- Habit progress will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Habit Calendar</h3>
+                        <div class="overflow-x-auto">
+                            <div id="habitCalendar">
+                                <!-- Habit calendar will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Habit Modal -->
+                    <div id="addHabitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md modal-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-primary">Add New Habit</h3>
+                                <button id="closeHabitModal" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="habitForm">
+                                <div class="mb-4">
+                                    <label for="habitName" class="block text-sm font-medium text-gray-700 mb-1">Habit Name</label>
+                                    <input type="text" id="habitName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="habitDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <textarea id="habitDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="habitFrequency" class="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                                    <select id="habitFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="habitGoal" class="block text-sm font-medium text-gray-700 mb-1">Goal (times per period)</label>
+                                    <input type="number" id="habitGoal" min="1" value="1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelHabit" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Habit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pomodoro Timer Tab -->
+                <div id="pomodoro" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Pomodoro Timer</h2>
+                        <button id="settingsPomodoroBtn" class="bg-secondary text-primary px-4 py-2 rounded-md hover:bg-primary hover:text-white transition duration-300 flex items-center">
+                            <i class="fas fa-cog mr-2"></i> Settings
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="relative w-64 h-64 mb-8">
+                            <svg class="w-full h-full" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                                <circle id="progress-ring" cx="50" cy="50" r="45" fill="none" stroke="var(--primary)" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="0" class="progress-ring__circle"/>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <div id="timer-display" class="text-4xl font-bold text-primary">25:00</div>
+                                <div id="timer-state" class="text-lg text-gray-600">Ready to focus</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4 mb-8">
+                            <button id="start-pomodoro" class="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-dark transition duration-300 flex items-center">
+                                <i class="fas fa-play mr-2"></i> Start
+                            </button>
+                            <button id="pause-pomodoro" class="bg-secondary text-primary px-6 py-3 rounded-full hover:bg-primary hover:text-white transition duration-300 flex items-center hidden">
+                                <i class="fas fa-pause mr-2"></i> Pause
+                            </button>
+                            <button id="reset-pomodoro" class="bg-secondary text-primary px-6 py-3 rounded-full hover:bg-primary hover:text-white transition duration-300 flex items-center">
+                                <i class="fas fa-redo mr-2"></i> Reset
+                            </button>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button id="pomodoro-mode" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300">Pomodoro</button>
+                            <button id="short-break-mode" class="bg-secondary text-primary px-4 py-2 rounded-md hover:bg-primary hover:text-white transition duration-300">Short Break</button>
+                            <button id="long-break-mode" class="bg-secondary text-primary px-4 py-2 rounded-md hover:bg-primary hover:text-white transition duration-300">Long Break</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Pomodoro Settings Modal -->
+                    <div id="pomodoroSettingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md modal-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-primary">Pomodoro Settings</h3>
+                                <button id="closePomodoroSettings" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="pomodoroSettingsForm">
+                                <div class="mb-4">
+                                    <label for="pomodoroDuration" class="block text-sm font-medium text-gray-700 mb-1">Pomodoro Duration (minutes)</label>
+                                    <input type="number" id="pomodoroDuration" min="1" max="60" value="25" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="shortBreakDuration" class="block text-sm font-medium text-gray-700 mb-1">Short Break Duration (minutes)</label>
+                                    <input type="number" id="shortBreakDuration" min="1" max="30" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="longBreakDuration" class="block text-sm font-medium text-gray-700 mb-1">Long Break Duration (minutes)</label>
+                                    <input type="number" id="longBreakDuration" min="1" max="60" value="15" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="pomodoroPerSet" class="block text-sm font-medium text-gray-700 mb-1">Pomodoros Before Long Break</label>
+                                    <input type="number" id="pomodoroPerSet" min="1" max="10" value="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="autoStartBreaks" class="block text-sm font-medium text-gray-700 mb-1">
+                                        <input type="checkbox" id="autoStartBreaks" class="mr-2"> Auto-start breaks
+                                    </label>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="autoStartPomodoros" class="block text-sm font-medium text-gray-700 mb-1">
+                                        <input type="checkbox" id="autoStartPomodoros" class="mr-2"> Auto-start pomodoros
+                                    </label>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelPomodoroSettings" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Settings</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expense Tracker Tab -->
+                <div id="expenses" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Expense Tracker</h2>
+                        <button id="addExpenseBtn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Expense
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Monthly Summary</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Total Expenses</p>
+                                    <p class="text-2xl font-bold text-primary" id="totalExpenses">$0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Budget Remaining</p>
+                                    <p class="text-2xl font-bold text-green-500" id="budgetRemaining">$1,000.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Most Spent Category</p>
+                                    <p class="text-xl font-medium text-primary" id="topCategory">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Expense Breakdown</h3>
+                            <div class="h-64" id="categoryChart">
+                                <!-- Chart will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="grid grid-cols-12 bg-secondary text-gray-700 font-medium py-3 px-4">
+                            <div class="col-span-2">Date</div>
+                            <div class="col-span-4">Description</div>
+                            <div class="col-span-2">Category</div>
+                            <div class="col-span-2">Amount</div>
+                            <div class="col-span-2">Actions</div>
+                        </div>
+                        <div class="divide-y divide-gray-200" id="expenseList">
+                            <!-- Expense items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Add Expense Modal -->
+                    <div id="addExpenseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-md modal-content">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-primary">Add New Expense</h3>
+                                <button id="closeExpenseModal" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="expenseForm">
+                                <div class="mb-4">
+                                    <label for="expenseDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                    <input type="date" id="expenseDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="expenseDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <input type="text" id="expenseDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="expenseCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                    <select id="expenseCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="food">Food</option>
+                                        <option value="transportation">Transportation</option>
+                                        <option value="entertainment">Entertainment</option>
+                                        <option value="shopping">Shopping</option>
+                                        <option value="bills">Bills</option>
+                                        <option value="health">Health</option>
+                                        <option value="education">Education</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="expenseAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                                    <input type="number" id="expenseAmount" min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" id="cancelExpense" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Expense</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Settings</h2>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Account Settings</h3>
+                        <form id="accountSettingsForm">
+                            <div class="mb-4">
+                                <label for="usernameSettings" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                <input type="text" id="usernameSettings" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" disabled>
+                            </div>
+                            <div class="mb-4">
+                                <label for="emailSettings" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="emailSettings" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div class="mb-4">
+                                <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                <input type="password" id="currentPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div class="mb-4">
+                                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                <input type="password" id="newPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div class="mb-4">
+                                <label for="confirmNewPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                <input type="password" id="confirmNewPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Notification Settings</h3>
+                        <form id="notificationSettingsForm">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email Notifications</label>
+                                <div class="space-y-2">
+                                    <div>
+                                        <input type="checkbox" id="emailTodoReminders" class="mr-2">
+                                        <label for="emailTodoReminders" class="text-sm text-gray-700">To-Do Reminders</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="emailHabitReminders" class="mr-2">
+                                        <label for="emailHabitReminders" class="text-sm text-gray-700">Habit Reminders</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="emailWeeklyReports" class="mr-2">
+                                        <label for="emailWeeklyReports" class="text-sm text-gray-700">Weekly Reports</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Push Notifications</label>
+                                <div class="space-y-2">
+                                    <div>
+                                        <input type="checkbox" id="pushTodoReminders" class="mr-2">
+                                        <label for="pushTodoReminders" class="text-sm text-gray-700">To-Do Reminders</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="pushHabitReminders" class="mr-2">
+                                        <label for="pushHabitReminders" class="text-sm text-gray-700">Habit Reminders</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="pushPomodoro" class="mr-2">
+                                        <label for="pushPomodoro" class="text-sm text-gray-700">Pomodoro Timer</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Danger Zone</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-700">Export All Data</p>
+                                    <p class="text-xs text-gray-500">Download a copy of all your data</p>
+                                </div>
+                                <button id="exportData" class="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition duration-300">Export</button>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-700">Delete Account</p>
+                                    <p class="text-xs text-gray-500">Permanently delete your account and all data</p>
+                                </div>
+                                <button id="deleteAccount" class="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-300">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- AI Chatbot -->
+        <div id="chatbot" class="fixed bottom-6 right-6 z-30">
+            <div id="chatbotButton" class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center shadow-lg cursor-pointer hover:bg-primary-dark transition duration-300 floating-btn">
+                <i class="fas fa-robot text-2xl"></i>
+            </div>
+            
+            <div id="chatbotWindow" class="hidden absolute bottom-20 right-0 w-80 h-96 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+                <div class="bg-primary text-white px-4 py-3 flex justify-between items-center">
+                    <h3 class="font-medium">BerrySweet Assistant</h3>
+                    <button id="closeChatbot" class="text-white hover:text-secondary">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatbotMessages">
+                    <div class="chat-message">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="bg-secondary rounded-lg p-3 text-sm">
+                                Hello! I'm your BerrySweet assistant. How can I help you today?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t p-3">
+                    <div class="flex">
+                        <input type="text" id="chatbotInput" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Type your message...">
+                        <button id="sendChatbotMessage" class="px-3 py-2 bg-primary text-white rounded-r-md hover:bg-primary-dark">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove JS user simulation, backend will handle authentication -->
+
+    <!-- Redirect to login.php for actual login functionality -->
+    <script>
+        // Remove the JS user simulation
+        // Instead, redirect to login.php (or use PHP include for login form)
+        window.location.href = "login.php";
+    </script>
+</body>
+</html>
